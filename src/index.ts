@@ -1,6 +1,8 @@
 import http from "node:http";
 
 import "dotenv/config";
+
+import { client } from "./app/db/pool.js";
 import { expressApplication } from "./app/app.js";
 
 function main() {
@@ -11,6 +13,7 @@ function main() {
     const server = http.createServer(expressApplication());
 
     //database connection
+    server
 
     //server listening on port
     server.listen(PORT, () => {
