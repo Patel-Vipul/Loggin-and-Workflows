@@ -45,12 +45,43 @@ export const regitserSubscription = async (req: Request, res: Response) => {
   }
 
   //send email
-  const emailresult = await mockemail({ email, content, subject, mode });
+  //   const emailresult = await mockemail({ email, content, subject, mode });
+
+  //send email with retrices mechanism
+  const maxattempt = 3;
+
+  let emailStatus: "sent" | "failed" = "failed";
+  let emailResult: Awaited<ReturnType<typeof mockemail>> | null = null;
+  let lastEmailError: unknown;
+
+  let emailData = {};
+  for (let attempt = 1; attempt <= maxattempt; attempt++) {
+    try {
+      emailResult = await mockemail({ email, content, mode, subject });
+      emailStatus = "sent";
+      emailData = {
+        status: emailStatus,
+        attempt,
+        data: emailResult,
+        message: "email has been sent",
+      };
+      break;
+    } catch (error) {
+      emailData = {
+        status: emailStatus,
+        attempt,
+        message: "Email could not be delivered",
+        error,
+      };
+      console.error(`email attempt ${attempt}/${maxattempt} failed`, error);
+    }
+  }
 
   //return response
   return res.status(201).json({
     success: true,
-    subscribtionId: insertResult.rows[0],
-    data: emailresult,
+    message: "subscription created successfully!",
+    subscribtionId: insertResult.rows[0].id,
+    email: emailData,
   });
 };
