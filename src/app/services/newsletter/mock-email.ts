@@ -1,6 +1,6 @@
 type modeOptions = "fail" | "fail-once" | "success";
 
-interface mokeEmailOptions {
+export interface mokeEmailOptions {
   email: string;
   subject: string;
   content: string;
@@ -9,7 +9,7 @@ interface mokeEmailOptions {
 
 const attemptLogs = new Set<string>();
 
-const mockemail = async ({
+export const mockemail = async ({
   email,
   content,
   subject,
@@ -19,7 +19,7 @@ const mockemail = async ({
     setTimeout(resolve, 2000);
   });
 
-  if (mode === "fail") throw new Error(`failed to send email to ${email}`);
+  if (mode === "fail") throw new Error(`failed to send email to ${email} mode = ${mode}`);
   if (mode === "fail-once" && !attemptLogs.has(email)) {
     attemptLogs.add(email);
     throw new Error(`failed to send email to ${email}`);

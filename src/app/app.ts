@@ -8,6 +8,7 @@ export const expressApplication = () : Express => {
     const app = express()
 
     //middlewares
+    app.use(express.json())
 
     //registered routes
     app.get("/health", (_, res) => {
