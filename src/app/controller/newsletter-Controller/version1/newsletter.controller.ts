@@ -6,6 +6,14 @@ import {
 } from "../../../services/newsletter/mock-email.js";
 import { pool } from "../../../db/pool.js";
 
+const delay = async (duration: number): Promise<void> => {
+  return new Promise<void>((resolve) =>
+    setTimeout(() => {
+      resolve();
+    }, duration),
+  );
+};
+
 export const regitserSubscription = async (req: Request, res: Response) => {
   //get the input
   const { email, content, subject, mode }: mokeEmailOptions = req?.body;
@@ -74,6 +82,10 @@ export const regitserSubscription = async (req: Request, res: Response) => {
         error,
       };
       console.error(`email attempt ${attempt}/${maxattempt} failed`, error);
+
+      if(attempt < maxattempt){
+        await delay(1000)
+      }
     }
   }
 
