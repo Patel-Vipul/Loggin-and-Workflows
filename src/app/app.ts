@@ -2,6 +2,8 @@ import express from "express"
 
 import type { Express } from "express";
 
+import newsletterRouter from "./routes/newsletter-api.js"; "./routes/newsletter-api.js";
+
 export const expressApplication = () : Express => {
     const app = express()
 
@@ -13,6 +15,8 @@ export const expressApplication = () : Express => {
             healthy : true
         })
     })
+
+    app.use("/newsletter-api/",newsletterRouter)
 
     return app;
 }
