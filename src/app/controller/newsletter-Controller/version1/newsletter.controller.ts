@@ -60,10 +60,11 @@ export const regitserSubscription = async (req: Request, res: Response) => {
 
   let emailStatus: "sent" | "failed" = "failed";
   let emailResult: Awaited<ReturnType<typeof mockemail>> | null = null;
-  let lastEmailError: unknown;
+  let emailData = {};
 
   const baseDelay = 1000;
-  let emailData = {};
+  const maxDelay = 8000;
+
   for (let attempt = 1; attempt <= maxattempt; attempt++) {
     try {
       emailResult = await mockemail({ email, content, mode, subject });
@@ -85,9 +86,13 @@ export const regitserSubscription = async (req: Request, res: Response) => {
       console.error(`email attempt ${attempt}/${maxattempt} failed`, error);
 
       if (attempt < maxattempt) {
-        const waitTime = baseDelay * 2 ** (attempt - 1)
-        console.log(`Next retry in ${waitTime/1000} seconds...`)
-        await delay(waitTime)
+        const exponentialDelay = Math.min(
+          maxDelay,
+          baseDelay * 2 ** (attempt - 1),
+        );
+        const waitTime = Math.random() * exponentialDelay;
+        console.log(`Next retry in ${waitTime / 1000} seconds...`);
+        await delay(waitTime);
       }
     }
   }
