@@ -4,7 +4,9 @@ import { regitserSubscription } from "../controller/newsletter-Controller/versio
 
 const newsletterRouter: Express = Router();
 
-newsletterRouter.post("/subscribe", regitserSubscription);
+newsletterRouter.post("/subscribe1", regitserSubscription);
+newsletterRouter.post("/subscribe2",)
+
 // newsletterRouter.get("/subscribers");
 
 export default newsletterRouter;
