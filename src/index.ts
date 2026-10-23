@@ -14,7 +14,6 @@ async function main() {
 
     //database connection
     const result = await  pool.query("SELECT NOW()")
-    console.log(result)
     console.log("Database is connected successfully! ", result.rows[0])
 
     //server listening on port

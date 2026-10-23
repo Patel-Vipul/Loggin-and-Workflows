@@ -1,23 +1,37 @@
-import express from "express"
+import express from "express";
+import { serve } from "inngest/express";
 
 import type { Express } from "express";
 
-import newsletterRouter from "./routes/newsletter-api.js"; "./routes/newsletter-api.js";
+import { inngest } from "./inngest/client.inngest.js";
 
-export const expressApplication = () : Express => {
-    const app = express()
+import newsletterRouter from "./routes/newsletter-api.js";
+import { registerSubscription } from "./inngest/function.inngest.js";
 
-    //middlewares
-    app.use(express.json())
 
-    //registered routes
-    app.get("/health", (_, res) => {
-        return res.status(200).json({
-            healthy : true
-        })
-    })
+export const expressApplication = (): Express => {
+  const app = express();
 
-    app.use("/newsletter-api/",newsletterRouter)
+  //middlewares
+  app.use(express.json());
 
-    return app;
-}
+  //inngest api route
+  app.use(
+    "/api/inngest",
+    serve({
+      client: inngest,
+      functions: [registerSubscription],
+    }),
+  );
+
+  //registered routes
+  app.get("/health", (_, res) => {
+    return res.status(200).json({
+      healthy: true,
+    });
+  });
+
+  app.use("/newsletter-api/", newsletterRouter);
+
+  return app;
+};
